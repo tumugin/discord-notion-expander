@@ -15,6 +15,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+	// 必要な権限: 121856
 	discord, err := discordgo.New("Bot " + config.discordToken)
 	if err != nil {
 		log.Fatal(err)
