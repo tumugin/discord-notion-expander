@@ -15,7 +15,7 @@ type Config struct {
 }
 
 func getConfig() (*Config, error) {
-	if err := godotenv.Load(fmt.Sprintf("../%s.env", os.Getenv("GO_ENV"))); err != nil {
+	if err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV"))); err != nil {
 		log.Println(err)
 	}
 	config := &Config{

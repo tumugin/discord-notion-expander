@@ -15,7 +15,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	discord, err := discordgo.New("Bot " + config.notionToken)
+	discord, err := discordgo.New("Bot " + config.discordToken)
 	if err != nil {
 		log.Fatal(err)
 		return

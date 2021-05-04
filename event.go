@@ -34,7 +34,7 @@ func (messageEventHandler *MessageEventHandler) onMessage(session *discordgo.Ses
 	rootPage := page.Root()
 	title := rootPage.Title
 	pageText := utils.GetNotionTextFromBlocks(rootPage.Content)
-	if _, err := session.ChannelMessageEditEmbed(message.ChannelID, message.ID, &discordgo.MessageEmbed{
+	if _, err := session.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
 		URL:         page.NotionURL(),
 		Title:       title,
 		Description: pageText,
