@@ -2,4 +2,8 @@ version: "3"
 services:
   discord-notion-expander:
     build: .
+    environment:
+      - BASE_NOTION_URL
+      - NOTION_TOKEN
+      - DISCORD_TOKEN
     restart: unless-stopped
