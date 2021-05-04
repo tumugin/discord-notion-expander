@@ -10,7 +10,7 @@ func getNotionUrlRegex(baseUrl string) string {
 	if !strings.HasSuffix(baseUrl, "/") {
 		newBaseUrl += "/"
 	}
-	return "^" + newBaseUrl + "(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))$"
+	return newBaseUrl + "(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))"
 }
 
 func GetNotionPageIdFromMessage(baseUrl string, content string) (bool, string) {

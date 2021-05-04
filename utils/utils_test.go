@@ -6,8 +6,8 @@ import (
 )
 
 func TestGetNotionUrlRegex(t *testing.T) {
-	assert.True(t, getNotionUrlRegex("https://www.notion.so/test/") == "^https://www.notion.so/test/(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))$")
-	assert.True(t, getNotionUrlRegex("https://www.notion.so/test") == "^https://www.notion.so/test/(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))$")
+	assert.True(t, getNotionUrlRegex("https://www.notion.so/test/") == "https://www.notion.so/test/(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))")
+	assert.True(t, getNotionUrlRegex("https://www.notion.so/test") == "https://www.notion.so/test/(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))")
 }
 
 var paramsTestGetNotionPageIdFromMessage = []struct {
