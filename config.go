@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -14,8 +15,7 @@ type Config struct {
 }
 
 func getConfig() (*Config, error) {
-	err := godotenv.Load(fmt.Sprintf("../%s.env", os.Getenv("GO_ENV")))
-	if err != nil {
+	if err := godotenv.Load(fmt.Sprintf("../%s.env", os.Getenv("GO_ENV"))); err != nil {
 		log.Println(err)
 	}
 	config := &Config{
@@ -23,18 +23,21 @@ func getConfig() (*Config, error) {
 		notionToken:   os.Getenv("NOTION_TOKEN"),
 		discordToken:  os.Getenv("DISCORD_TOKEN"),
 	}
-	checkConfig(config)
-	return config, err
+	if err := checkConfig(config); err != nil {
+		return nil, err
+	}
+	return config, nil
 }
 
-func checkConfig(config *Config) {
+func checkConfig(config *Config) error {
 	if config.discordToken == "" {
-		log.Fatal("Env value DISCORD_TOKEN is required.")
+		return errors.New("env value DISCORD_TOKEN is required")
 	}
 	if config.notionToken == "" {
-		log.Fatal("Env value NOTION_TOKEN is required.")
+		return errors.New("env value NOTION_TOKEN is required")
 	}
 	if config.baseNotionUrl == "" {
-		log.Fatal("Env value BASE_NOTION_URL is required.")
+		return errors.New("env value BASE_NOTION_URL is required")
 	}
+	return nil
 }
