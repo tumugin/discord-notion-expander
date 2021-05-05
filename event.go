@@ -2,11 +2,11 @@ package main
 
 import (
 	"discord-notion-expander/utils"
-	"log"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/kjk/notionapi"
+	"github.com/thoas/go-funk"
 	"golang.org/x/exp/utf8string"
+	"log"
 )
 
 type MessageEventHandler struct {
@@ -36,7 +36,8 @@ func (messageEventHandler *MessageEventHandler) onMessage(session *discordgo.Ses
 	rootPage := page.Root()
 	title := rootPage.Title
 	pageText := utils.GetNotionTextFromBlocks(rootPage.Content)
-	pageTextWithMaxLength := utf8string.NewString(pageText).Slice(0, 250)
+	pageTextUtf8String := utf8string.NewString(pageText)
+	pageTextWithMaxLength := pageTextUtf8String.Slice(0, funk.MaxInt([]int{250, pageTextUtf8String.RuneCount()}).(int))
 	if _, err := session.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
 		URL:         page.NotionURL(),
 		Title:       title,
