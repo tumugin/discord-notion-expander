@@ -37,7 +37,7 @@ func (messageEventHandler *MessageEventHandler) onMessage(session *discordgo.Ses
 	title := rootPage.Title
 	pageText := utils.GetNotionTextFromBlocks(rootPage.Content)
 	pageTextUtf8String := utf8string.NewString(pageText)
-	pageTextWithMaxLength := pageTextUtf8String.Slice(0, funk.MaxInt([]int{250, pageTextUtf8String.RuneCount()}).(int))
+	pageTextWithMaxLength := pageTextUtf8String.Slice(0, funk.MinInt([]int{250, pageTextUtf8String.RuneCount()}).(int))
 	if _, err := session.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
 		URL:         page.NotionURL(),
 		Title:       title,
