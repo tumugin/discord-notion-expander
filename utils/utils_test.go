@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/alecthomas/assert"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -13,35 +13,33 @@ func TestGetNotionUrlRegex(t *testing.T) {
 var paramsTestGetNotionPageIdFromMessage = []struct {
 	baseUrl string
 	content string
-	match   bool
-	pageId  string
+	pageIds []string
 }{
 	{
 		baseUrl: "https://www.notion.so/test/",
 		content: "https://www.notion.so/test/Test-page-all-c969c9455d7c4dd79c7f860f3ace6429",
-		match:   true,
-		pageId:  "c969c9455d7c4dd79c7f860f3ace6429",
+		pageIds: []string{"c969c9455d7c4dd79c7f860f3ace6429"},
 	},
 	{
 		baseUrl: "https://www.notion.so/test/",
 		content: "https://www.notion.so/test/c969c9455d7c4dd79c7f860f3ace6429",
-		match:   true,
-		pageId:  "c969c9455d7c4dd79c7f860f3ace6429",
+		pageIds: []string{"c969c9455d7c4dd79c7f860f3ace6429"},
+	},
+	{
+		baseUrl: "https://www.notion.so/test/",
+		content: "https://www.notion.so/test/c969c9455d7c4dd79c7f860f3ace6429\nhttps://www.notion.so/test/abcdefg12345abcdefg12345",
+		pageIds: []string{"c969c9455d7c4dd79c7f860f3ace6429", "abcdefg12345abcdefg12345"},
 	},
 	{
 		baseUrl: "https://www.notion.so/test/",
 		content: "うえしゃまぁああああああ",
-		match:   false,
-		pageId:  "",
+		pageIds: []string{},
 	},
 }
 
 func TestGetNotionPageIdFromMessage(t *testing.T) {
 	for _, testItem := range paramsTestGetNotionPageIdFromMessage {
-		match, pageId := GetNotionPageIdFromMessage(testItem.baseUrl, testItem.content)
-		assert.Equal(t, testItem.match, match)
-		if testItem.match {
-			assert.Equal(t, testItem.pageId, pageId)
-		}
+		pageIds := GetNotionPageIdsFromMessage(testItem.baseUrl, testItem.content)
+		assert.ElementsMatch(t, testItem.pageIds, pageIds)
 	}
 }

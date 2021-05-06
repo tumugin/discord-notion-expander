@@ -22,12 +22,19 @@ func NewMessageEventHandler(baseUrl string, notionApiToken string) *MessageEvent
 }
 
 func (messageEventHandler *MessageEventHandler) onMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
-	match, notionPageId := utils.GetNotionPageIdFromMessage(messageEventHandler.baseUrl, message.Message.Content)
-	if !match {
+	notionPageIds := utils.GetNotionPageIdsFromMessage(messageEventHandler.baseUrl, message.Message.Content)
+	if len(notionPageIds) == 0 {
+		// 不要な認証などをかけない為に必要ないときは処理を止める
 		return
 	}
 	client := &notionapi.Client{}
 	client.AuthToken = messageEventHandler.notionApiToken
+	for _, notionPageId := range notionPageIds {
+		postNotionPage(session, message, client, notionPageId)
+	}
+}
+
+func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate, client *notionapi.Client, notionPageId string) {
 	page, err := client.DownloadPage(notionPageId)
 	if err != nil {
 		log.Println(err)

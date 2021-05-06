@@ -13,17 +13,22 @@ func getNotionUrlRegex(baseUrl string) string {
 	return newBaseUrl + "(.*-([a-zA-Z0-9]*)|([a-zA-Z0-9]*))"
 }
 
-func GetNotionPageIdFromMessage(baseUrl string, content string) (bool, string) {
+func GetNotionPageIdsFromMessage(baseUrl string, content string) []string {
 	regex := regexp.MustCompile(getNotionUrlRegex(baseUrl))
 	matches := regex.FindAllStringSubmatch(content, -1)
 	if len(matches) == 0 {
-		return false, ""
+		return []string{}
 	}
-	if len(matches[0]) < 3 {
-		return false, ""
+	var results []string
+	for _, match := range matches {
+		if len(match) < 3 {
+			continue
+		}
+		if match[2] != "" {
+			results = append(results, match[2])
+			continue
+		}
+		results = append(results, match[1])
 	}
-	if matches[0][2] != "" {
-		return true, matches[0][2]
-	}
-	return true, matches[0][1]
+	return results
 }
