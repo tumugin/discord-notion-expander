@@ -42,10 +42,10 @@ func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate
 		return
 	}
 	rootPage := page.Root()
-	pageIcon := rootPage.FormatPage().PageIcon
+	formatPage := rootPage.FormatPage()
 	var title string
-	if utils.IsSingleEmojiText(pageIcon) {
-		title = fmt.Sprintf("%s %s", pageIcon, rootPage.Title)
+	if formatPage != nil && utils.IsSingleEmojiText(formatPage.PageIcon) {
+		title = fmt.Sprintf("%s %s", formatPage.PageIcon, rootPage.Title)
 	} else {
 		title = rootPage.Title
 	}
