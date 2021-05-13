@@ -10,20 +10,24 @@ var paramsTestIsSingleEmojiText = []struct {
 	result   bool
 }{
 	{
+		testText: "https://example.com/",
+		result:   false,
+	},
+	{
 		testText: "a",
-		result: false,
+		result:   false,
 	},
 	{
 		testText: "あ",
-		result: false,
+		result:   false,
 	},
 	{
 		testText: "彅",
-		result: false,
+		result:   false,
 	},
 	{
 		testText: "😇",
-		result: true,
+		result:   true,
 	},
 	{
 		testText: "❤️",
