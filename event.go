@@ -2,6 +2,7 @@ package main
 
 import (
 	"discord-notion-expander/utils"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/kjk/notionapi"
 	"github.com/thoas/go-funk"
@@ -41,7 +42,13 @@ func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate
 		return
 	}
 	rootPage := page.Root()
-	title := rootPage.Title
+	pageIcon := rootPage.FormatPage().PageIcon
+	var title string
+	if utils.IsSingleEmojiText(pageIcon) {
+		title = fmt.Sprintf("%s %s", pageIcon, rootPage.Title)
+	} else {
+		title = rootPage.Title
+	}
 	pageText := utils.GetNotionTextFromBlocks(rootPage.Content)
 	pageTextUtf8String := utf8string.NewString(pageText)
 	pageTextWithMaxLength := pageTextUtf8String.Slice(0, funk.MinInt([]int{250, pageTextUtf8String.RuneCount()}).(int))
