@@ -24,13 +24,13 @@ go build
 
 ```dotenv
 BASE_NOTION_URL=https://www.notion.so/hogehoge/
-NOTION_TOKEN=<NOTION_TOKEN_V2>
+NOTION_TOKEN=<NOTION_TOKEN>
 DISCORD_TOKEN=<DISCORD_BOT_TOKEN>
 ```
 
 を設定してください。
 
-`NOTION_TOKEN` にはNotionのAPIを使用するため、Notionを開いているブラウザから取れるCookieの `token_v2` を設定してください。
+`NOTION_TOKEN` にはNotionのAPIを使用するため、Notionから公式APIのキーを取得してください。( https://developers.notion.com/ )
 
 `DISCORD_TOKEN` にはDiscordのBotの管理ページから閲覧できる、Build-A-Botの中にある `TOKEN` を設定してください。
 
