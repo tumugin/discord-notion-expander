@@ -40,8 +40,21 @@ func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate
 		log.Println(err)
 		return
 	}
-	pageProps := page.Properties.(notion.PageProperties)
-	title := utils.RichTextsToString(pageProps.Title.Title)
+
+	// TODO: Notion APIに実装されていないのでアイコンは取得できない。実装されたら入れる。
+	var title string
+	if pageProps, res := page.Properties.(notion.PageProperties); res {
+		title = utils.RichTextsToString(pageProps.Title.Title)
+	}
+	if pageProps, res := page.Properties.(notion.DatabasePageProperties); res {
+		if value, kres := pageProps["Name"]; kres {
+			title = utils.RichTextsToString(value.Title)
+		} else {
+			log.Printf("Page title property not found in DatabasePage. Page id = %s.\n", notionPageId)
+			return
+		}
+	}
+
 	contents, err := client.FindBlockChildrenByID(context.Background(), notionPageId, &notion.PaginationQuery{})
 	if err != nil {
 		log.Println(err)
