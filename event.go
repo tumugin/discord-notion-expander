@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"discord-notion-expander/utils"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/kjk/notionapi"
+	"github.com/dstotijn/go-notion"
 	"github.com/thoas/go-funk"
 	"golang.org/x/exp/utf8string"
 	"log"
@@ -28,32 +28,43 @@ func (messageEventHandler *MessageEventHandler) onMessage(session *discordgo.Ses
 		// 不要な認証などをかけない為に必要ないときは処理を止める
 		return
 	}
-	client := &notionapi.Client{}
-	client.AuthToken = messageEventHandler.notionApiToken
+	client := notion.NewClient(messageEventHandler.notionApiToken)
 	for _, notionPageId := range notionPageIds {
 		postNotionPage(session, message, client, notionPageId)
 	}
 }
 
-func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate, client *notionapi.Client, notionPageId string) {
-	page, err := client.DownloadPage(notionPageId)
+func postNotionPage(session *discordgo.Session, message *discordgo.MessageCreate, client *notion.Client, notionPageId string) {
+	page, err := client.FindPageByID(context.Background(), notionPageId)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	rootPage := page.Root()
-	formatPage := rootPage.FormatPage()
+
+	// TODO: Notion APIに実装されていないのでアイコンは取得できない。実装されたら入れる。
 	var title string
-	if formatPage != nil && utils.IsSingleEmojiText(formatPage.PageIcon) {
-		title = fmt.Sprintf("%s %s", formatPage.PageIcon, rootPage.Title)
-	} else {
-		title = rootPage.Title
+	if pageProps, res := page.Properties.(notion.PageProperties); res {
+		title = utils.RichTextsToString(pageProps.Title.Title)
 	}
-	pageText := utils.GetNotionTextFromBlocks(rootPage.Content)
+	if pageProps, res := page.Properties.(notion.DatabasePageProperties); res {
+		if value, kres := pageProps["Name"]; kres {
+			title = utils.RichTextsToString(value.Title)
+		} else {
+			log.Printf("Page title property not found in DatabasePage. Page id = %s.\n", notionPageId)
+			return
+		}
+	}
+
+	contents, err := client.FindBlockChildrenByID(context.Background(), notionPageId, &notion.PaginationQuery{})
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	pageText := utils.GetNotionTextFromBlocks(contents.Results)
 	pageTextUtf8String := utf8string.NewString(pageText)
 	pageTextWithMaxLength := pageTextUtf8String.Slice(0, funk.MinInt([]int{250, pageTextUtf8String.RuneCount()}).(int))
 	if _, err := session.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
-		URL:         page.NotionURL(),
+		URL:         "https://www.notion.so/" + notionPageId,
 		Title:       title,
 		Description: pageTextWithMaxLength,
 		Provider: &discordgo.MessageEmbedProvider{
