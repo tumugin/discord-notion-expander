@@ -19,6 +19,21 @@ func GetNotionTextFromBlocks(blocks []notion.Block) string {
 		if block.Heading3 != nil {
 			notionText += "### " + RichTextsToString(block.Heading3.Text) + "\n"
 		}
+		if block.BulletedListItem != nil {
+			notionText += "- " + RichTextsToString(block.BulletedListItem.Text) + "\n"
+		}
+		if block.NumberedListItem != nil {
+			notionText += "* " + RichTextsToString(block.NumberedListItem.Text) + "\n"
+		}
+		if block.ToDo != nil {
+			notionText += "[ ] " + RichTextsToString(block.ToDo.Text) + "\n"
+		}
+		if block.Toggle != nil {
+			notionText += "[ ] " + RichTextsToString(block.Toggle.Text) + "\n"
+		}
+		if block.ChildPage != nil {
+			notionText += "↗ " + block.ChildPage.Title + "\n"
+		}
 	}
 	return notionText
 }
