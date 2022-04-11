@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"errors"
@@ -9,19 +9,19 @@ import (
 )
 
 type Config struct {
-	baseNotionUrl string
-	notionToken   string
-	discordToken  string
+	BaseNotionUrl string
+	NotionToken   string
+	DiscordToken  string
 }
 
-func getConfig() (*Config, error) {
+func GetConfig() (*Config, error) {
 	if err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV"))); err != nil {
 		log.Println(err)
 	}
 	config := &Config{
-		baseNotionUrl: os.Getenv("BASE_NOTION_URL"),
-		notionToken:   os.Getenv("NOTION_TOKEN"),
-		discordToken:  os.Getenv("DISCORD_TOKEN"),
+		BaseNotionUrl: os.Getenv("BASE_NOTION_URL"),
+		NotionToken:   os.Getenv("NOTION_TOKEN"),
+		DiscordToken:  os.Getenv("DISCORD_TOKEN"),
 	}
 	if err := checkConfig(config); err != nil {
 		return nil, err
@@ -30,13 +30,13 @@ func getConfig() (*Config, error) {
 }
 
 func checkConfig(config *Config) error {
-	if config.discordToken == "" {
+	if config.DiscordToken == "" {
 		return errors.New("env value DISCORD_TOKEN is required")
 	}
-	if config.notionToken == "" {
+	if config.NotionToken == "" {
 		return errors.New("env value NOTION_TOKEN is required")
 	}
-	if config.baseNotionUrl == "" {
+	if config.BaseNotionUrl == "" {
 		return errors.New("env value BASE_NOTION_URL is required")
 	}
 	return nil
