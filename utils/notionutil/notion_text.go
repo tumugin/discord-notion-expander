@@ -1,4 +1,4 @@
-package utils
+package notionutil
 
 import (
 	"github.com/dstotijn/go-notion"
