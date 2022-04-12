@@ -14,7 +14,7 @@ func TestGetPageTitleByNotionPageWithEmoji(t *testing.T) {
 		},
 		Properties: notion.PageProperties{
 			Title: notion.PageTitle{
-				Title: []notion.RichText{notion.RichText{PlainText: "Page Title Test"}},
+				Title: []notion.RichText{{PlainText: "Page Title Test"}},
 			},
 		},
 	})
