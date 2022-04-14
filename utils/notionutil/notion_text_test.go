@@ -156,7 +156,7 @@ func TestGetNotionTextFromBlocks(t *testing.T) {
 				notion.ToDo{
 					RichTextBlock: notion.RichTextBlock{
 						Text: []notion.RichText{
-							{PlainText: "あおいすず"},
+							{PlainText: "サウナに行く"},
 						},
 					},
 				},
@@ -166,7 +166,7 @@ func TestGetNotionTextFromBlocks(t *testing.T) {
 			Toggle: utils.Ptr(
 				notion.RichTextBlock{
 					Text: []notion.RichText{
-						{PlainText: "あ～すず"},
+						{PlainText: "筋トレをする"},
 					},
 				},
 			),
